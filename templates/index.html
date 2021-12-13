@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Awesome-pyecharts</title>
+    <script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
+    <script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts-liquidfill.min.js"></script>
+    <script src="https://assets.pyecharts.org/assets/echarts-liquidfill.min.js" type="text/javascript"></script>
+	<script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts-wordcloud.min.js"></script>
+    <style>
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 40px;
+          height: 20px;
+        }
+
+        .switch input {display:none;}
+
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 15px;
+          width: 15px;
+          left: 2px;
+          bottom: 2.5px;
+          background-color: white;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+
+        input:checked + .slider {
+          background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+          box-shadow: 0 0 1px #2196F3;
+
+        }
+
+        input:checked + .slider:before {
+          -webkit-transform: translateX(26px);
+          -ms-transform: translateX(26px);
+          transform: translateX(20px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+          border-radius: 34px;
+        }
+
+        .slider.round:before {
+          border-radius: 50%;
+        }
+        h1{font-family:"隶书";color:#9AB3F5;font-size:50px;margin-align:center;line-height:80px;}
+     </style>
+</head>
+<body>
+<h1>基于Pyecharts + Flask + MQTT 智能家居数字大屏系统</h1>
+<div class="box">
+    <div id="tem" style="width:400px; height:400px;"></div>
+    <div id="hum" style="width:400px; height:400px;"></div>
+    <div id="line" style="width:1000px; height:400px;"></div>
+    <div id="light" style="width:1000px; height:400px;"></div>
+
+</div>
+
+    <form id="form">
+        <table>
+        <tr>
+            <td>红色:</td>
+            <td>
+                <label class="switch">
+                    <input type="checkbox"  value="0" name="led">
+                    <div class="slider round"></div>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>绿色:</td>
+            <td>
+                <label class="switch">
+                    <input type="checkbox"  value="1" name="led">
+                    <div class="slider round"></div>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>蓝色:</td>
+            <td>
+                <label class="switch">
+                    <input type="checkbox"  value="2" name="led">
+                    <div class="slider round"></div>
+                </label>
+            </td>
+        </tr>
+            <tr>
+            <td>风扇:</td>
+            <td>
+                <label class="switch">
+                    <input type="checkbox"  value="0" name="fan">
+                    <div class="slider round"></div>
+                </label>
+            </td>
+        </tr>
+        </table>
+    </form>
+<div style="width:28%">
+    <div id="he-plugin-simple"></div>
+</div>
+
+<script>
+WIDGET = {
+  "CONFIG": {
+    "modules": "012",
+    "background": "1",
+    "tmpColor": "FFFFFF",
+    "tmpSize": "16",
+    "cityColor": "FFFFFF",
+    "citySize": "16",
+    "aqiColor": "FFFFFF",
+    "aqiSize": "16",
+    "weatherIconSize": "24",
+    "alertIconSize": "18",
+    "padding": "10px 10px 10px 10px",
+    "shadow": "0",
+    "language": "auto",
+    "fixed": "false",
+    "vertical": "top",
+    "horizontal": "left",
+    "key": "da6cc52ffead49478e7c428abd633803"
+  }
+}
+</script>
+<script src="https://widget.qweather.net/simple/static/js/he-simple-common.js?v=2.0"></script>
+</body>
+<script>
+        var tem = echarts.init(document.getElementById('tem'), 'white', {renderer: 'canvas'});
+        var hum = echarts.init(document.getElementById('hum'), 'white', {renderer: 'canvas'});
+        var line = echarts.init(document.getElementById('line'), 'white', {renderer: 'canvas'});
+        var light = echarts.init(document.getElementById('light'), 'pink',{renderer: 'canvas'});
+
+        $(
+            function () {
+                update_tem(tem);
+                update_hum(hum);
+                update_line(line);
+                update_light(light);
+                setInterval(update_tem, 30000);
+                setInterval(update_hum, 30000);
+                setInterval(update_line, 60000);
+                setInterval(update_light, 60000);
+
+            }
+        );
+
+        function update_tem() {
+            $.ajax({
+                type: "GET",
+                url: "http://127.0.0.1:5000/tem",
+                dataType: 'json',
+                success: function (result) {
+                    tem.setOption(result);
+                }
+            });
+        }
+
+        function update_hum() {
+            $.ajax({
+                type: "GET",
+                url: "http://127.0.0.1:5000/hum",
+                dataType: 'json',
+                success: function (result) {
+                    hum.setOption(result);
+                }
+            });
+        }
+
+        function update_line() {
+            $.ajax({
+                type: "GET",
+                url: "http://127.0.0.1:5000/line",
+                dataType: 'json',
+                success: function (result) {
+                    line.setOption(result);
+                }
+            });
+        }
+        function update_light() {
+            $.ajax({
+                type: "GET",
+                url: "http://127.0.0.1:5000/light",
+                dataType: 'json',
+                success: function (result) {
+					light.setOption(result);
+				},
+            });
+        }
+        var btn = document.getElementById('form')
+        btn.onclick = function () {
+            $.ajax({
+                type : 'POST',
+                dataType:"json",
+                url:"/data",
+                data:
+                $('#form').serialize()
+            });
+        }
+    </script>
+</html>
