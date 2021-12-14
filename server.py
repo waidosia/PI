@@ -1,15 +1,17 @@
 import time
 
-from flask import Flask, render_template, request
-from jinja2 import  Environment, FileSystemLoader
+from flask import Flask, render_template, request, redirect, url_for
+from jinja2 import Environment, FileSystemLoader
 from pyecharts.commons.utils import JsCode
 from pyecharts.globals import CurrentConfig
 from scratch import queryList, rtdb
+from login_s import login_s
 
 CurrentConfig.GLOBAL_ENV = Environment(loader=FileSystemLoader("./templates"))
 
 from pyecharts import options as opts
-from pyecharts.charts import Gauge,  Line, Liquid
+from pyecharts.charts import Gauge, Line, Liquid
+
 app = Flask(__name__, static_folder="templates")
 
 
@@ -82,8 +84,8 @@ def liquid_base_light() -> Liquid:
             [0.68],
             label_opts=opts.LabelOpts(
                 font_size=50,
-                formatter=JsCode('{}%'.format(x*100)
-                ),
+                formatter=JsCode('{}%'.format(x * 100)
+                                 ),
                 position="inside",
             ),
         )
@@ -94,7 +96,23 @@ def liquid_base_light() -> Liquid:
 
 @app.route("/")
 def index():
+    return render_template("login.html", text='请登录')
+
+
+@app.route("/show")
+def show():
     return render_template("index.html")
+
+
+@app.route("/login", methods=["POST"])
+def login():
+    username = request.form['uname']
+    password = request.form['passwd']
+    rest = login_s(username, password)
+    if rest == 'ok':
+        return redirect(url_for('show'))
+    else:
+        return render_template("login.html", text='账号密码错误')
 
 
 @app.route("/tem")

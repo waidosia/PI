@@ -15,7 +15,7 @@ def insert(dd):
         conn = sqlite3.connect('db/database.sqlite')
         c = conn.cursor()
         c.execute(
-            "insert into COMPANY (tem, hum, datetime) VALUES ({},{},{});".format(dd['tem'], dd['hum'],
+            "insert into dht (tem, hum, datetime) VALUES ({},{},{});".format(dd['tem'], dd['hum'],
                                                                                  int(time.time())))
         conn.commit()
         conn.close()

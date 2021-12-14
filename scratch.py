@@ -8,7 +8,7 @@ def query(stars, end):
     try:
         conn = sqlite3.connect('db/database.sqlite', check_same_thread=False)
         c = conn.cursor()
-        cursor = c.execute("select tem,hum from COMPANY where datetime between {} and {}".format(stars, end))
+        cursor = c.execute("select tem,hum from dht where datetime between {} and {}".format(stars, end))
         for row in cursor:
             _.append(row)
     except Exception as e:
@@ -30,7 +30,7 @@ def rtdb():
     try:
         conn = sqlite3.connect('db/database.sqlite', check_same_thread=False)
         c = conn.cursor()
-        cursor = c.execute("select tem,hum from COMPANY order by ID DESC LIMIT 1")
+        cursor = c.execute("select tem,hum from dht order by ID DESC LIMIT 1")
         for row in cursor:
             tem = row[0]
             hum = row[1]
