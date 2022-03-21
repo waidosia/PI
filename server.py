@@ -59,11 +59,10 @@ def get_light():
     c = liquid_base_light()
     return c.dump_options_with_quotes()
 
-@app.round("/wordcloudChart")
+@app.route("/wordcloudChart")
 def wordcloudChart():
     c = creat_wordcloud()
-    return c.dump_options_with_quotes()
-s
+    return c.dump_options_with_quotes() 
 
 @app.route("/data", methods=["POST"])
 def get_data():
