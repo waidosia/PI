@@ -1,7 +1,9 @@
+import time
+
 from pyecharts.commons.utils import JsCode
 from pyecharts.globals import CurrentConfig
 from pyecharts import options as opts
-from pyecharts.charts import Gauge, Line, Liquid,WordCloud
+from pyecharts.charts import Gauge, Line, Liquid, WordCloud
 from scratch import queryList, rtdb
 def gauge_base_tem() -> Gauge:
     """
@@ -49,14 +51,14 @@ def gauge_base_hum() -> Gauge:
 
 
 def line_markpoint() -> Line:
-    hour = int(time.strftime('%H', time.localtime(time.time())))
-    l1 = [str(i) for i in range(hour, -1, -1)]
-    l2 = [str(i) for i in range(23, hour, -1)]
+    # hour = int(time.strftime('%H', time.localtime(time.time())))
+    hour = int(time.strftime('%H', time.localtime(1639234714)))
+    l =  [str(i) for i in range(hour, -1, -1)] + [str(i) for i in range(23, hour, -1)]
     s = queryList()
     print(s[0], s[1])
     c = (
         Line()
-            .add_xaxis(xaxis_data=l1 + l2)
+            .add_xaxis(xaxis_data=l)
             .add_yaxis('tem',
                        s[0],
                        )

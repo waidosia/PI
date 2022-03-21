@@ -142,7 +142,7 @@
             $(
                 function () {
                     fetchlineData(line);
-                    setInterval(getDynamicData, 200000);
+                    setInterval(fetchlineData, 200000);
                 }
             );
 
@@ -173,7 +173,7 @@
             function fetchwordcloudData() {
                 $.ajax({
                     type: "GET",
-                    url: "http://127.0.0.1:5000/wordcloudChart",
+                    url: "http://192.168.1.100:5000/wordcloudChart",
                     dataType:'json',
                     success: function (result) {
                         wordcloud.setOption(result);

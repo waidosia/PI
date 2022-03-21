@@ -1,5 +1,3 @@
-import time
-
 from flask import Flask, render_template, request, redirect, url_for
 from jinja2 import Environment, FileSystemLoader
 from pyecharts.commons.utils import JsCode
@@ -55,7 +53,6 @@ def get_line():
 
 @app.route("/light")
 def get_light():
-
     c = liquid_base_light()
     return c.dump_options_with_quotes()
 
