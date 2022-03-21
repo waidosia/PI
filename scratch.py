@@ -8,7 +8,9 @@ def query(stars, end):
     try:
         conn = sqlite3.connect('db/database.sqlite', check_same_thread=False)
         c = conn.cursor()
-        cursor = c.execute("select tem,hum from dht where datetime between {} and {}".format(stars, end))
+        cursor = c.execute(
+            "select tem,hum from dht where datetime between {} and {}".format(
+                stars, end))
         for row in cursor:
             _.append(row)
     except Exception as e:
@@ -17,16 +19,17 @@ def query(stars, end):
         if conn:
             conn.close()
         if len(_) == 0:
-            return (tem, hum)
+            return tem, hum
         for i in _:
             tem += i[0]
             hum += i[1]
         tem = round(tem / len(_), 2)
         hum = round(hum / len(_), 2)
-        return (tem, hum)
+        return tem, hum
+
 
 def rtdb():
-    tem, hum =  0, 0
+    tem, hum = 0, 0
     try:
         conn = sqlite3.connect('db/database.sqlite', check_same_thread=False)
         c = conn.cursor()
@@ -39,11 +42,14 @@ def rtdb():
     finally:
         if conn:
             conn.close()
-        return (tem,hum)
+        return tem, hum
+
 
 def queryList():
-    now_time = time.localtime(time.time())
-    today = datetime.date.today()
+    #  now_time = time.localtime(time.time())
+    now_time = time.localtime(1639234714)
+    # today = datetime.date.today()
+    today = datetime.date(2021,12,12)
     hour = now_time.tm_hour
     tem, hum = [], []
     l1 = [i for i in range(hour, -1, -1)]
@@ -64,12 +70,9 @@ def queryList():
         tem.append(s[0])
         hum.append(s[1])
 
-    return (tem,hum)
+    return tem, hum
 
 
 if __name__ == '__main__':
     print(queryList())
     print(rtdb())
-
-
-

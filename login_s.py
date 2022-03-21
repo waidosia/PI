@@ -1,6 +1,7 @@
 import hashlib
 import sqlite3
 
+
 def login_s(uname, passwd):
     try:
         m = hashlib.md5()
@@ -23,4 +24,4 @@ def login_s(uname, passwd):
 
 
 if __name__ == '__main__':
-    print(login('admin', 'admin'))
+    print(login_s('admin', 'admin'))

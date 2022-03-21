@@ -5,7 +5,6 @@ import time
 
 from paho.mqtt import client as mqtt_client
 
-
 broker = '119.91.122.58'
 port = 1883
 topic = "DHT"
@@ -30,8 +29,8 @@ def publish(client):
     msg_count = 0
     while True:
         time.sleep(60)
-        tem = random.randint(-20,60)
-        hum = random.randint(0,100)
+        tem = random.randint(-20, 60)
+        hum = random.randint(0, 100)
         data = {"DHT11": {"tem": tem, "hum": hum}}
         r = json.dumps(data)
         result = client.publish(topic, r)
