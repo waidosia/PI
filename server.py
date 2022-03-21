@@ -9,89 +9,9 @@ from login_s import login_s
 
 CurrentConfig.GLOBAL_ENV = Environment(loader=FileSystemLoader("./templates"))
 
-from pyecharts import options as opts
-from pyecharts.charts import Gauge, Line, Liquid
+from pyecharts_tool import gauge_base_hum,gauge_base_tem,liquid_base_light,line_markpoint,creat_wordcloud
 
 app = Flask(__name__, static_folder="templates")
-
-
-def gauge_base_tem() -> Gauge:
-    s = rtdb()[0]
-    c = (
-        Gauge(init_opts=opts.InitOpts(width="400px", height="400px"))
-            .add('',
-                 min_=-20,
-                 max_=60,
-                 split_number=8,
-                 data_pair=[('实时温度\n\n', s)],
-                 axisline_opts=opts.AxisLineOpts(
-                     linestyle_opts=opts.LineStyleOpts(
-                         color=[(0.1875, '#3742fa'), (0.4375, '#1e90ff'), (0.625, '#2ed573'), (0.75, '#d35400'),
-                                (1, '#c0392b')], width=25
-                     )
-                 )
-                 )
-            .set_global_opts(title_opts=opts.TitleOpts(title="实时温度", pos_left='center'))
-    )
-    return c
-
-
-def gauge_base_hum() -> Gauge:
-    s = rtdb()[1]
-    c = (
-        Gauge(init_opts=opts.InitOpts(width="400px", height="400px"))
-            .add('',
-                 data_pair=[('实时湿度\n\n', s)],
-                 axisline_opts=opts.AxisLineOpts(
-                     linestyle_opts=opts.LineStyleOpts(
-                         color=[(0.45, '#1e90ff'), (0.75, '#2ed573'),
-                                (1, '#c0392b')], width=25
-                     )
-                 )
-                 )
-            .set_global_opts(title_opts=opts.TitleOpts(title="实时湿度", pos_left='center'))
-    )
-    return c
-
-
-def line_markpoint() -> Line:
-    hour = int(time.strftime('%H', time.localtime(time.time())))
-    l1 = [str(i) for i in range(hour, -1, -1)]
-    l2 = [str(i) for i in range(23, hour, -1)]
-    s = queryList()
-    print(s[0], s[1])
-    c = (
-        Line()
-            .add_xaxis(xaxis_data=l1 + l2)
-            .add_yaxis('tem',
-                       s[0],
-                       )
-            .add_yaxis('hum',
-                       s[1],
-                       )
-            .set_global_opts(title_opts=opts.TitleOpts(title="过去24小时温湿度变化曲线"))
-
-    )
-    return c
-
-
-def liquid_base_light() -> Liquid:
-    x = 0.54
-    c = (
-        Liquid()
-            .add(
-            "test",
-            [0.68],
-            label_opts=opts.LabelOpts(
-                font_size=50,
-                formatter=JsCode('{}%'.format(x * 100)
-                                 ),
-                position="inside",
-            ),
-        )
-            .set_global_opts(title_opts=opts.TitleOpts(title="光照强度"))
-    )
-    return c
 
 
 @app.route("/")
@@ -135,9 +55,15 @@ def get_line():
 
 @app.route("/light")
 def get_light():
+
     c = liquid_base_light()
     return c.dump_options_with_quotes()
 
+@app.round("/wordcloudChart")
+def wordcloudChart():
+    c = creat_wordcloud()
+    return c.dump_options_with_quotes()
+s
 
 @app.route("/data", methods=["POST"])
 def get_data():
@@ -145,5 +71,7 @@ def get_data():
     return 'hello'
 
 
+
+
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5000)
+    app.run(host='0.0.0.0', port=5000)
