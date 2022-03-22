@@ -4,6 +4,7 @@ from pyecharts.commons.utils import JsCode
 from pyecharts.globals import CurrentConfig
 from scratch import queryList, rtdb
 from login_s import login_s
+from scratch import send_data
 
 CurrentConfig.GLOBAL_ENV = Environment(loader=FileSystemLoader("./templates"))
 
@@ -63,8 +64,8 @@ def wordcloudChart():
 
 @app.route("/data", methods=["POST"])
 def get_data():
-    print(request.stream.read())
-    return 'hello'
+    send_data(request.stream.read())
+    return 'ok'
 
 
 

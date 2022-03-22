@@ -1,7 +1,7 @@
 import datetime
 import sqlite3
 import time
-
+from paho.mqtt import client as mqtt_client
 
 def query(stars, end):
     _, tem, hum = [], 0, 0
@@ -73,6 +73,33 @@ def queryList():
     return tem, hum
 
 
+def send_data(s):
+    client = mqtt_client.Client("pi")
+    client.connect("119.91.122.58", 1883, 60)
+    s = str(s, encoding = "utf-8")
+    if "&" not in s :
+        s += "&"
+    s_list = s.split("&")
+    led = ['0','0','0']
+    motor = 0
+    for i in s_list:
+        if "fan=on" in s_list:
+            motor = 1
+        if "led=red" in s_list:
+            led[0] = '1'
+        if "led=green" in s_list:
+            led[1] = '1'
+        if "led=blue" in s_list:
+            led[2] = '1'
+    new_s = ''. join(led)
+    client.publish("motor",motor,0)
+    client.publish("led",new_s,0)
+    print(new_s)
+    print(motor)
+
+        
+
 if __name__ == '__main__':
-    print(queryList())
-    print(rtdb())
+    # print(queryList())
+    # print(rtdb())
+    send_data(b'led=red&led=blue')

@@ -11,12 +11,24 @@
         <style>
             h1{font-family:"楷书";color:#9AB3F5;font-size:50px;line-height:80px;}
             div{box-shadow:0 10px 20px rgba(191, 216, 184,0.19), 0 6px 6px rgba(191, 216, 184,0.23);border-radius:5px;background:#E8F6EF;position:relative; }
-            #tem{width:400px; height:400px;margin-left:40px; margin-top:20px;float: left;}
-            #hum{width:400px; height:400px;margin-left:40px; margin-top:20px;float: left;}
-            #altitude{width:500px; height:400px;margin-left:40px; margin-top:20px;float: left;}
-            #line{width:800px; height:400px;margin-top:20px;margin-left:50px;float: left;}
-            #wordcloud{width:500px; height:400px;margin-left:40px;margin-top:20px;float: left;}
+            #tem{width:380px; height:380px;margin-left:40px; margin-top:20px;float: left;}
+            #hum{width:380px; height:380px;margin-left:40px; margin-top:20px;float: left;}
+            #ff{width:200px; height:380px;margin-left:40px; margin-top:20px;float: left;}
+            #altitude{width:380px; height:380px;margin-left:40px; margin-top:20px;float: left;}
+            #line{width:1000px; height:400px;margin-top:20px;margin-left:50px;float: left;}
+            #wordcloud{width:410px; height:400px;margin-left:40px;margin-top:20px;float: left;}
             .ttop{width:100%;height:90px;text-align:center; margin-top:-20px;background:#6F69AC;}
+            input[type=checkbox]{
+                -webkit-appearance:none;
+                -webkit-appearance:none;
+                -moz-appearance:none;
+                -o-appearance:none;
+                -ms-appearance:none;
+            }
+            #fan_img {width: 80px;height: 80px;}
+            #led_red{width: 80px;height: 80px;}
+            #led_green{width: 80px;height: 80px;}
+            #led_blue{width: 80px;height: 80px;}
         </style>
     </head>
     <body>
@@ -26,49 +38,52 @@
         <div id="tem"></div>
         <div id="hum"></div>
         <div id="altitude"></div>
-        <div id="line"></div>
-        <div id="wordcloud"></div>
-
-        <form id="form">
+        <div id="ff">
+            <form id="form">
             <table>
             <tr>
-                <td>红色:</td>
                 <td>
                     <label class="switch">
-                        <input type="checkbox"  value="0" name="led">
-                        <div class="slider round"></div>
+                        <input type="checkbox" value="red" name="led">
+                        <img src="https://pic-1300802512.cos.ap-guangzhou.myqcloud.com/k5khb2ltjk-led_off.png" id="led_red">
                     </label>
                 </td>
+                <td>红色</td>
             </tr>
             <tr>
-                <td>绿色:</td>
                 <td>
                     <label class="switch">
-                        <input type="checkbox"  value="1" name="led">
-                        <div class="slider round"></div>
+                        <input type="checkbox"  value="green" name="led">
+                        <img src="https://pic-1300802512.cos.ap-guangzhou.myqcloud.com/k5khb2ltjk-led_off.png" id="led_green">
                     </label>
                 </td>
+                <td>绿色</td>
             </tr>
             <tr>
-                <td>蓝色:</td>
                 <td>
                     <label class="switch">
-                        <input type="checkbox"  value="2" name="led">
-                        <div class="slider round"></div>
+                        <input type="checkbox"  value="blue" name="led">
+                        <img src="https://pic-1300802512.cos.ap-guangzhou.myqcloud.com/k5khb2ltjk-led_off.png" id="led_blue">
                     </label>
                 </td>
+                <td>蓝色</td>
             </tr>
                 <tr>
-                <td>风扇:</td>
                 <td>
                     <label class="switch">
-                        <input type="checkbox"  value="0" name="fan">
-                        <div class="slider round"></div>
+                        <input type="checkbox"  value="on" name="fan">
+                        <img src="https://pic-1300802512.cos.ap-guangzhou.myqcloud.com/bqa8kbi2g8-fan_off.png" id="fan_img">
                     </label>
                 </td>
+                <td>风扇</td>
             </tr>
             </table>
         </form>
+        </div>
+        <div id="line"></div>
+        <div id="wordcloud"></div>
+
+        
     </body>
     <script>
             var tem = echarts.init(document.getElementById('tem'), 'white', {renderer: 'canvas'});
@@ -167,7 +182,7 @@
             $(
                 function () {
                     fetchwordcloudData(wordcloud);
-                    setInterval(fetchwordcloudData, 2000);
+                    setInterval(fetchwordcloudData, 50000);
                 }
             );
 
@@ -183,5 +198,66 @@
                 });
             }
     </script>
-
+    <script>
+        var btn = document.getElementById('form')
+        btn.onclick = function () {
+            $.ajax({
+                type : 'POST',
+                dataType:"json",
+                url:"/data",
+                data:
+                $('#form').serialize()
+            });
+        }
+    </script>
+    <script>
+            window.onload = function(){
+                var led_red = document.getElementById('led_red');
+                var led_r = false;
+                var fan_img = document.getElementById('fan_img');
+                var onOff = false;
+                var led_green = document.getElementById('led_green');
+                var led_g = false;
+                var led_blue = document.getElementById('led_blue');
+                var led_b = false;
+                led_red.onclick = function(){
+                    if(led_r){
+                        led_red.src = 'https://pic-1300802512.cos.ap-guangzhou.myqcloud.com/k5khb2ltjk-led_off.png';
+                        led_r = false;
+                    }else{
+                        led_red.src = 'https://pic-1300802512.cos.ap-guangzhou.myqcloud.com/kdw1zsbarl-led_red.png';
+                        led_r = true;
+                    }
+                }
+                fan_img.onclick = function(){
+                if(onOff){
+                    fan_img.src = 'https://pic-1300802512.cos.ap-guangzhou.myqcloud.com/bqa8kbi2g8-fan_off.png';
+                    onOff = false;
+                }else{
+                    fan_img.src = 'https://pic-1300802512.cos.ap-guangzhou.myqcloud.com/8cqbdulgjb-fan_on.png';
+                    onOff = true;
+                }
+            }
+                led_green.onclick = function(){
+                    if(led_g){
+                        led_green.src = 'https://pic-1300802512.cos.ap-guangzhou.myqcloud.com/k5khb2ltjk-led_off.png';
+                        led_g = false;
+                    }else{
+                        led_green.src = 'https://pic-1300802512.cos.ap-guangzhou.myqcloud.com/j47qfhjftt-led_green.png';
+                        led_g = true;
+                    }
+        }
+                led_blue.onclick = function(){
+                    if(led_b){
+                        led_blue.src = 'https://pic-1300802512.cos.ap-guangzhou.myqcloud.com/k5khb2ltjk-led_off.png';
+                        led_b = false;
+                    }else{
+                        led_blue.src = 'https://pic-1300802512.cos.ap-guangzhou.myqcloud.com/9um491pcbn-led_blue.png';
+                        led_b = true;
+                    }
+                }
+        
+                } 
+    </script>
+   
 </html>
