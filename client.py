@@ -10,13 +10,15 @@ SERVER = '119.91.122.58'  # MQTT地址
 PORT = 1883  # 端口
 
 
-def insert(dd):
+def insert_dt(dd):
     try:
         conn = sqlite3.connect('db/database.sqlite')
         c = conn.cursor()
         c.execute(
-            "insert into dht (tem, hum, datetime) VALUES ({},{},{});".format(dd['tem'], dd['hum'],
-                                                                                 int(time.time())))
+            "insert into dht (tem, hum, datetime, deviceID) VALUES ({},{},{},{});".format(dd['tem'], dd['hum'],
+                                                                               int(time.time()),8266))
+                                                                                
+        print('DHT插入成功')
         conn.commit()
         conn.close()
 
@@ -25,6 +27,25 @@ def insert(dd):
     finally:
         if conn:
             conn.close()
+
+
+def insert_l(ll):
+    try:
+        conn = sqlite3.connect('db/database.sqlite')
+        c = conn.cursor()
+        c.execute(
+            "insert into light (strength, datatime,deviceID) VALUES ({},{},{});".format(ll['light'],
+                                                                                 int(time.time()),32))
+
+        print('Light插入成功')
+        conn.commit()
+        conn.close()
+
+    except Exception as e:
+        print(e)
+    finally:
+        if conn:
+            conn.close()     
 
 
 def connect_mqtt():
@@ -42,13 +63,17 @@ def connect_mqtt():
 
 def on_message(client, userdata, msg):
     d = msg.payload.decode()
-    dd = json.loads(d)['DHT11']
-    print(dd)
-    insert(dd)
+    dd = json.loads(d)
+    if 'DHT11' in dd:
+        print(dd['DHT11'])
+        insert_dt(dd['DHT11'])
+    else:
+        print(dd['Light'])
+        insert_l(dd['Light'])
 
 
 def subscribe(client: mqtt_client):
-    client.subscribe('DHT')
+    client.subscribe('mqttx/#')
     client.on_message = on_message
 
 
