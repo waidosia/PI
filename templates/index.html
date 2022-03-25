@@ -83,7 +83,6 @@
         <div id="line"></div>
         <div id="wordcloud"></div>
 
-        
     </body>
     <script>
             var tem = echarts.init(document.getElementById('tem'), 'white', {renderer: 'canvas'});
@@ -97,7 +96,7 @@
             function update_tem() {
             $.ajax({
                 type: "GET",
-                url: "http://192.168.1.100:5000/tem",
+                url: "http://192.168.1.101:5000/tem",
                 dataType: 'json',
                 success: function (result) {
                     tem.setOption(result);
@@ -118,7 +117,7 @@
             function update_hum() {
                 $.ajax({
                     type: "GET",
-                    url: "http://192.168.1.100:5000/hum",
+                    url: "http://192.168.1.101:5000/hum",
                     dataType:'json',
                     success: function (result) {
                         hum.setOption(result);
@@ -142,7 +141,7 @@
             function fetchaltitudeData() {
                 $.ajax({
                     type: "GET",
-                    url: "http://192.168.1.100:5000/light",
+                    url: "http://192.168.1.101:5000/light",
                     dataType:'json',
                     success: function (result) {
                         altitude.setOption(result);
@@ -165,7 +164,7 @@
             function fetchlineData() {
                 $.ajax({
                     type: "GET",
-                    url: "http://192.168.1.100:5000/line",
+                    url: "http://192.168.1.101:5000/line",
                     dataType: "json",
                     success: function (result) {
                         line.setOption(result);
@@ -189,7 +188,7 @@
             function fetchwordcloudData() {
                 $.ajax({
                     type: "GET",
-                    url: "http://192.168.1.100:5000/wordcloudChart",
+                    url: "http://192.168.1.101:5000/wordcloudChart",
                     dataType:'json',
                     success: function (result) {
                         wordcloud.setOption(result);

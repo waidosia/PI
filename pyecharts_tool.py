@@ -4,7 +4,7 @@ from pyecharts.commons.utils import JsCode
 from pyecharts.globals import CurrentConfig
 from pyecharts import options as opts
 from pyecharts.charts import Gauge, Line, Liquid, WordCloud
-from scratch import queryList, rtdb
+from scratch import queryList, rtdb,read_l
 def gauge_base_tem() -> Gauge:
     """
     实现温度指针
@@ -51,9 +51,9 @@ def gauge_base_hum() -> Gauge:
 
 
 def line_markpoint() -> Line:
-    # hour = int(time.strftime('%H', time.localtime(time.time())))
-    hour = int(time.strftime('%H', time.localtime(1639234714)))
+    hour = int(time.strftime('%H', time.localtime(time.time())))
     l =  [str(i) for i in range(hour, -1, -1)] + [str(i) for i in range(23, hour, -1)]
+    l = l[::-1]
     s = queryList()
     print(s[0], s[1])
     c = (
@@ -72,15 +72,15 @@ def line_markpoint() -> Line:
 
 
 def liquid_base_light() -> Liquid:
-    x = 0.54
+    x = read_l()
     c = (
         Liquid()
             .add(
-            "test",
-            [0.68],
+            "光照强度",
+            [x],
             label_opts=opts.LabelOpts(
                 font_size=50,
-                formatter=JsCode('{}%'.format(x * 100)
+                formatter=JsCode('{}'.format(x)
                                  ),
                 position="inside",
             ),

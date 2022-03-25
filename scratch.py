@@ -28,6 +28,8 @@ def query(stars, end):
         return tem, hum
 
 
+
+
 def rtdb():
     tem, hum = 0, 0
     try:
@@ -45,11 +47,26 @@ def rtdb():
         return tem, hum
 
 
+def read_l():
+    light = 0
+    try:
+        conn = sqlite3.connect('db/database.sqlite', check_same_thread=False)
+        c = conn.cursor()
+        cursor = c.execute("select strength from light order by ID DESC LIMIT 1")
+        for row in cursor:
+            light = row[0]
+    except Exception as e:
+        print(e)
+    finally:
+        if conn:
+            conn.close()
+        return light
+
+
+
 def queryList():
-    #  now_time = time.localtime(time.time())
-    now_time = time.localtime(1639234714)
-    # today = datetime.date.today()
-    today = datetime.date(2021,12,12)
+    now_time = time.localtime(time.time())
+    today = datetime.date.today()
     hour = now_time.tm_hour
     tem, hum = [], []
     l1 = [i for i in range(hour, -1, -1)]
@@ -70,7 +87,7 @@ def queryList():
         tem.append(s[0])
         hum.append(s[1])
 
-    return tem, hum
+    return tem[::-1], hum[::-1]
 
 
 def send_data(s):
